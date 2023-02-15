@@ -1,0 +1,27 @@
+{
+  "name": "secrets-secret-sharing-app-",
+  "version": "1.0.0",
+  "description": "secret sharing app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GeorgeCDixon/Secrets-Secret-Sharing-App-.git"
+  },
+  "author": "George C Dixon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GeorgeCDixon/Secrets-Secret-Sharing-App-/issues"
+  },
+  "homepage": "https://github.com/GeorgeCDixon/Secrets-Secret-Sharing-App-#readme",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "mongoose": "^6.9.1",
+    "mongoose-encryption": "^2.1.2"
+  }
+}
