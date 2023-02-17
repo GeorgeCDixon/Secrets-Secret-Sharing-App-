@@ -4,7 +4,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
-var encrypt = require('mongoose-encryption');
+//var encrypt = require('mongoose-encryption'); 
+const md5 = require("md5");  // This one used for password hashing
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const app =express();
 
@@ -23,7 +26,7 @@ const userSchema= new mongoose.Schema({
 //Encrypting password using mongoose-encryption npm package
 
 
-userSchema.plugin(encrypt, {secret:process.env.SECRET, encryptedFields:["password"]});
+//userSchema.plugin(encrypt, {secret:process.env.SECRET, encryptedFields:["password"]});
 
 const User = new mongoose.model("User", userSchema);
 
@@ -47,17 +50,20 @@ app.get("/submit", function(req, res){
 });
 
 app.post("/register", function(req,res){
-const newUser = new User({
-    email:req.body.username,
-    password: req.body.password
-});
-newUser.save(function(err){
-    if(!err){
-        res.render("secrets");
-    }else{
-        res.send(err);
-    }
-});
+
+    bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+        const newUser = new User({
+            email:req.body.username,
+            password: hash
+    });
+    newUser.save(function(err){
+        if(!err){
+            res.render("secrets");
+        }else{
+            res.send(err);
+        }
+        });
+    });
 });
 
 app.post("/login", function(req, res){
@@ -69,12 +75,13 @@ app.post("/login", function(req, res){
             console.log(err);
         }else{
             if(foundEmail){
-                if(foundEmail.password===password){
-                    res.render("secrets");
-                }else{
-                    res.send("Wrong Login Details...Try with correct details");
-                    
-                }
+                bcrypt.compare(password, foundEmail.password, function(err, result) {
+                    if(result===true){
+                        res.render("secrets");
+                    }else{
+                        res.render(err);
+                    }
+                });
             }
         }
     });
